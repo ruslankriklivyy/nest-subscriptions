@@ -36,7 +36,7 @@ model Role {
 model Subscription {
   id                    Int                @id @default(autoincrement())
   name                  String             @db.VarChar(100)
-  price                 Decimal            @db.Decimal()
+  price                 Float
   available_posts_count Int
   is_published          Boolean
   users                 SubscriptionUser[]
@@ -57,13 +57,14 @@ model SubscriptionUser {
 }
 
 model Post {
-  id         Int       @id @default(autoincrement())
-  content    String
-  author_id  Int
-  author     User      @relation(fields: [author_id], references: [id])
-  comments   Comment[]
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  id           Int       @id @default(autoincrement())
+  content      String
+  author_id    Int
+  author       User      @relation(fields: [author_id], references: [id])
+  comments     Comment[]
+  is_published Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
 }
 
 model Comment {

@@ -1,6 +1,5 @@
 import { Subscription } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { Decimal } from '@prisma/client/runtime/library';
 
 export class SubscriptionEntity implements Subscription {
   constructor(partial: Partial<SubscriptionEntity>) {
@@ -14,7 +13,7 @@ export class SubscriptionEntity implements Subscription {
   name: string;
 
   @ApiProperty({ example: 99.99, description: 'Subscription price' })
-  price: Decimal;
+  price: number;
 
   @ApiProperty({ example: 10, description: 'Available posts count' })
   available_posts_count: number;
