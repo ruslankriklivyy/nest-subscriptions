@@ -4,6 +4,13 @@ const prisma = new PrismaClient();
 
 export async function seedSubscriptionUser() {
   try {
+    const currentDate = new Date();
+    const oneMonthLater = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      currentDate.getDate(),
+    );
+
     await prisma.subscriptionUser.updateMany({
       where: {
         user_id: 2,
@@ -11,6 +18,7 @@ export async function seedSubscriptionUser() {
       },
       data: {
         is_active: false,
+        end_date: oneMonthLater,
       },
     });
 
@@ -23,11 +31,13 @@ export async function seedSubscriptionUser() {
       },
       update: {
         is_active: true,
+        end_date: oneMonthLater,
       },
       create: {
         user_id: 2,
         subscription_id: 1,
         is_active: true,
+        end_date: oneMonthLater,
       },
     });
   } catch (error) {

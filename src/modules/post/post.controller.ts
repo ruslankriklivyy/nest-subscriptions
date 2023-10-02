@@ -25,8 +25,8 @@ export class PostController {
   }
 
   @Get('/:id')
-  getOne(@Param() { id }) {
-    return this.postService.getOne(Number(id));
+  getOne(@Param() { id }, @User() userId: number) {
+    return this.postService.getOne(Number(id), userId);
   }
 
   @Post()
@@ -35,8 +35,12 @@ export class PostController {
   }
 
   @Put('/:id')
-  update(@Param() { id }, @Body() postDto: UpdatePostDto) {
-    return this.postService.update(Number(id), postDto);
+  update(
+    @Param() { id },
+    @User() userId: number,
+    @Body() postDto: UpdatePostDto,
+  ) {
+    return this.postService.update(Number(id), userId, postDto);
   }
 
   @Delete('/:id')

@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   private async generateToken(user: UserEntity) {
-    const jwtPayload = { id: user.id, email: user.email, role: user.role_id };
+    const jwtPayload = { id: user.id, email: user.email, role: user.role };
     return this.jwtService.sign(jwtPayload);
   }
 

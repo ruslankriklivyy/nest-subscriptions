@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateSubscriptionUserDto } from './dto/create-subscription-user.dto';
 import { UpdateSubscriptionUserDto } from './dto/update-subscription-user.dto';
 import { User } from '../../decorators/user.decorator';
+import { SubscriptionUserPolicy } from './subscription-user.policy';
 
 @Controller('user-subscriptions')
 export class SubscriptionUserController {
@@ -47,7 +48,7 @@ export class SubscriptionUserController {
   }
 
   @Put('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, SubscriptionUserPolicy)
   update(
     @Param() { id },
     @Body() subscriptionUserDto: UpdateSubscriptionUserDto,
@@ -61,7 +62,7 @@ export class SubscriptionUserController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, SubscriptionUserPolicy)
   delete(@Param() { id }, @User() userId: number) {
     return this.subscriptionUserService.delete(userId, Number(id));
   }

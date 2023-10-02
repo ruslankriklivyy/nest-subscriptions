@@ -11,6 +11,8 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { ROLES_KEY } from './roles-auth.decorator';
 
+const ADMIN_ROLE = 'admin';
+
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
@@ -40,7 +42,7 @@ export class RolesGuard implements CanActivate {
 
       const user = this.jwtService.verify(token);
       request.user = user;
-      return user.roles.some((role) => requiredRoles.includes(role.value));
+      return user.role.slug === ADMIN_ROLE;
     } catch (error) {
       throw new HttpException('No access', HttpStatus.FORBIDDEN);
     }

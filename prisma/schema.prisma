@@ -15,13 +15,31 @@ model User {
   name          String             @db.VarChar(100)
   password      String             @db.VarChar(100)
   email         String             @unique @db.VarChar(45)
+  balance       Balance?
   role_id       Int
   role          Role               @relation(fields: [role_id], references: [id])
+  transactions  Transaction[]
   posts         Post[]
   comments      Comment[]
   subscriptions SubscriptionUser[]
   created_at    DateTime           @default(now())
   updated_at    DateTime           @updatedAt
+}
+
+model Balance {
+  id      Int   @id @default(autoincrement())
+  total   Float @default(0)
+  user_id Int   @unique
+  user    User  @relation(fields: [user_id], references: [id])
+}
+
+model Transaction {
+  id         Int      @id @default(autoincrement())
+  total      Float
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Role {
@@ -50,8 +68,10 @@ model SubscriptionUser {
   user            User         @relation(fields: [user_id], references: [id])
   subscription    Subscription @relation(fields: [subscription_id], references: [id])
   is_active       Boolean      @default(false)
+  end_date        DateTime?
   created_at      DateTime     @default(now())
   updated_at      DateTime     @updatedAt
+  deleted_at      DateTime?
 
   @@id([user_id, subscription_id])
 }

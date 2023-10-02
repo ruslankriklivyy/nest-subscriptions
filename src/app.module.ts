@@ -9,6 +9,8 @@ import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { PostModule } from './modules/post/post.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { SubscriptionUserModule } from './modules/subscription-user/subscription-user.module';
+import { BalanceModule } from './modules/balance/balance.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { SubscriptionUserModule } from './modules/subscription-user/subscription
     PostModule,
     CommentModule,
     SubscriptionUserModule,
+    BalanceModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

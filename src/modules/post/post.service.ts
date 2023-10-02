@@ -11,8 +11,8 @@ export class PostService {
     return this.prisma.post.findMany();
   }
 
-  getOne(id: number) {
-    return this.prisma.post.findUnique({ where: { id } });
+  getOne(id: number, userId: number) {
+    return this.prisma.post.findUnique({ where: { id, author_id: userId } });
   }
 
   create(userId: number, postDto: CreatePostDto) {
@@ -22,8 +22,11 @@ export class PostService {
     });
   }
 
-  update(id: number, postDto: UpdatePostDto) {
-    return this.prisma.post.update({ where: { id }, data: postDto });
+  update(id: number, userId: number, postDto: UpdatePostDto) {
+    return this.prisma.post.update({
+      where: { id, author_id: userId },
+      data: postDto,
+    });
   }
 
   delete(id: number) {

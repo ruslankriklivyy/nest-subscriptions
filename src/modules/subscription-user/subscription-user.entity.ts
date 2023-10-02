@@ -15,8 +15,14 @@ export class SubscriptionUserEntity implements SubscriptionUser {
   is_active: boolean;
 
   @ApiProperty()
+  end_date: Date;
+
+  @ApiProperty()
   created_at: Date;
 
   @ApiProperty()
   updated_at: Date;
+
+  @ApiProperty()
+  deleted_at: Date;
 }

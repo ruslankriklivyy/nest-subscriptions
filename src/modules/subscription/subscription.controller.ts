@@ -44,13 +44,13 @@ export class SubscriptionController {
     @Param() { id },
     @Body() subscriptionDto: CreateAndUpdateSubscriptionDto,
   ) {
-    return this.subscriptionService.update(id, subscriptionDto);
+    return this.subscriptionService.update(Number(id), subscriptionDto);
   }
 
   @Delete('/:id')
   @Roles('Admin')
   @UseGuards(RolesGuard)
   delete(@Param() { id }) {
-    return this.subscriptionService.delete(id);
+    return this.subscriptionService.delete(Number(id));
   }
 }
