@@ -25,8 +25,8 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  getAll(@Query() query: PostQueryFilter) {
-    return this.postService.getAll(query);
+  getAll(@User() user: UserEntity, @Query() query: PostQueryFilter) {
+    return this.postService.getAll(query, user);
   }
 
   @Get('/:id')
