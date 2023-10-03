@@ -23,6 +23,8 @@ export class PostService {
     const { count, subscriptionId } =
       await this.subscriptionUserService.getAvailablePostsCount(userId);
 
+    console.log(count);
+
     if (count === 0) {
       throw new HttpException('Not enough posts count', HttpStatus.FORBIDDEN);
     }

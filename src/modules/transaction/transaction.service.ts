@@ -19,6 +19,7 @@ export class TransactionService {
   }
 
   async create(userId: number, transactionDto: CreateAndUpdateTransactionDto) {
+    console.log(transactionDto);
     const newTransaction = await this.prisma.transaction.create({
       data: { user_id: userId, ...transactionDto },
     });

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../../decorators/user.decorator';
@@ -17,7 +17,7 @@ export class TransactionController {
   @Post()
   create(
     @User() userId: number,
-    transactionDto: CreateAndUpdateTransactionDto,
+    @Body() transactionDto: CreateAndUpdateTransactionDto,
   ) {
     return this.transactionService.create(userId, transactionDto);
   }

@@ -116,12 +116,9 @@ export class SubscriptionUserService {
       where: { user_id: userId, is_active: true },
     });
     const activeSubscriptionUser = subscriptionUser.subscription_id;
-    const subscription = await this.subscriptionService.getOne(
-      activeSubscriptionUser,
-    );
 
     return {
-      count: subscription.available_posts_count,
+      count: subscriptionUser.available_posts_count,
       subscriptionId: activeSubscriptionUser,
     };
   }
