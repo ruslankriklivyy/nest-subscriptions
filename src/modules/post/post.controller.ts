@@ -7,6 +7,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -15,6 +16,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { User } from '../../decorators/user.decorator';
 import { UserEntity } from '../user/user.entity';
 import { ApiTags } from '@nestjs/swagger';
+import { PostQueryFilter } from '../../../types/queries/PostQueryFilter';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -23,8 +25,8 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  getAll() {
-    return this.postService.getAll();
+  getAll(@Query() query: PostQueryFilter) {
+    return this.postService.getAll(query);
   }
 
   @Get('/:id')

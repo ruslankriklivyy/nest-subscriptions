@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { SubscriptionUserService } from '../subscription-user/subscription-user.service';
+import { PostQueryFilter } from '../../../types/queries/PostQueryFilter';
 
 @Injectable()
 export class PostService {
@@ -11,8 +12,14 @@ export class PostService {
     private subscriptionUserService: SubscriptionUserService,
   ) {}
 
-  getAll() {
-    return this.prisma.post.findMany();
+  getAll(query: PostQueryFilter) {
+    let where = {};
+
+    if (query?.filter?.author) {
+      where = { author: { name: { startsWith: query?.filter?.author } } };
+    }
+
+    return this.prisma.post.findMany({ where });
   }
 
   getOne(id: number, userId: number) {

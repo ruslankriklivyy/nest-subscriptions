@@ -131,11 +131,9 @@ export class SubscriptionUserService {
       );
     }
 
-    const activeSubscriptionUser = subscriptionUser.subscription_id;
-
     return {
       count: subscriptionUser.available_posts_count,
-      subscriptionId: activeSubscriptionUser,
+      subscriptionId: subscriptionUser.subscription_id,
     };
   }
 

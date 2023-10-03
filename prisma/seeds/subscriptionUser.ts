@@ -1,16 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { oneMonthLater } from '../../src/helpers/get-one-month-later.helper';
 
 const prisma = new PrismaClient();
 
 export async function seedSubscriptionUser() {
   try {
-    const currentDate = new Date();
-    const oneMonthLater = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      currentDate.getDate(),
-    );
-
     await prisma.subscriptionUser.updateMany({
       where: {
         user_id: 2,
