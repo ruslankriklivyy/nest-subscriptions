@@ -4,6 +4,8 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { SubscriptionUserService } from '../subscription-user/subscription-user.service';
 import { PostQueryFilter } from '../../../types/queries/PostQueryFilter';
+import { UserEntity } from '../user/user.entity';
+import { ADMIN_ROLE } from '../auth/roles.guard';
 
 @Injectable()
 export class PostService {
@@ -12,11 +14,15 @@ export class PostService {
     private subscriptionUserService: SubscriptionUserService,
   ) {}
 
-  getAll(query: PostQueryFilter) {
-    let where = {};
+  getAll(query: PostQueryFilter, user: UserEntity) {
+    const where = {};
 
     if (query?.filter?.author) {
-      where = { author: { name: { startsWith: query?.filter?.author } } };
+      where['author'] = { name: { startsWith: query?.filter?.author } };
+    }
+
+    if (user.role.slug !== ADMIN_ROLE) {
+      where['is_published'] = true;
     }
 
     return this.prisma.post.findMany({ where });
