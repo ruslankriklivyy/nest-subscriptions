@@ -16,11 +16,16 @@ export class BalanceService {
     });
   }
 
-  async updateTotal(userId: number, total: number) {
+  async updateTotal(
+    userId: number,
+    total: number,
+    type: 'increment' | 'decrement',
+  ) {
     const balance = await this.prisma.balance.findUnique({
       where: { user_id: userId },
     });
-    const balanceTotal = balance.total + total;
+    const balanceTotal =
+      type === 'increment' ? balance.total + total : balance.total - total;
 
     return this.prisma.balance.update({
       where: { user_id: userId },

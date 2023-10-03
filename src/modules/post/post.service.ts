@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { SubscriptionUserService } from '../subscription-user/subscription-user.service';
 
 @Injectable()
 export class PostService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private subscriptionUserService: SubscriptionUserService,
+  ) {}
 
   getAll() {
     return this.prisma.post.findMany();
@@ -15,7 +19,20 @@ export class PostService {
     return this.prisma.post.findUnique({ where: { id, author_id: userId } });
   }
 
-  create(userId: number, postDto: CreatePostDto) {
+  async create(userId: number, postDto: CreatePostDto) {
+    const { count, subscriptionId } =
+      await this.subscriptionUserService.getAvailablePostsCount(userId);
+
+    if (count === 0) {
+      throw new HttpException('Not enough posts count', HttpStatus.FORBIDDEN);
+    }
+
+    await this.subscriptionUserService.updateAvailablePostsCount(
+      userId,
+      subscriptionId,
+      count - 1,
+    );
+
     return this.prisma.post.create({
       data: { author_id: userId, ...postDto },
       include: { author: true },

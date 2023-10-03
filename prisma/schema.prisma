@@ -63,15 +63,16 @@ model Subscription {
 }
 
 model SubscriptionUser {
-  user_id         Int
-  subscription_id Int
-  user            User         @relation(fields: [user_id], references: [id])
-  subscription    Subscription @relation(fields: [subscription_id], references: [id])
-  is_active       Boolean      @default(false)
-  end_date        DateTime?
-  created_at      DateTime     @default(now())
-  updated_at      DateTime     @updatedAt
-  deleted_at      DateTime?
+  user_id               Int
+  subscription_id       Int
+  user                  User         @relation(fields: [user_id], references: [id])
+  subscription          Subscription @relation(fields: [subscription_id], references: [id])
+  is_active             Boolean      @default(false)
+  available_posts_count Int
+  end_date              DateTime?
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @updatedAt
+  deleted_at            DateTime?
 
   @@id([user_id, subscription_id])
 }

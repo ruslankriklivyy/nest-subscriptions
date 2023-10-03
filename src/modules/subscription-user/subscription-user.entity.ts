@@ -14,6 +14,9 @@ export class SubscriptionUserEntity implements SubscriptionUser {
   @ApiProperty({ example: false, description: 'Is active' })
   is_active: boolean;
 
+  @ApiProperty({ example: 1, description: 'Available posts count' })
+  available_posts_count: number;
+
   @ApiProperty()
   end_date: Date;
 

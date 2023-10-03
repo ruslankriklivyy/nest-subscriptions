@@ -37,6 +37,7 @@ export async function seedSubscriptionUser() {
         user_id: 2,
         subscription_id: 1,
         is_active: true,
+        available_posts_count: 1,
         end_date: oneMonthLater,
       },
     });

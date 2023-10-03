@@ -23,7 +23,11 @@ export class TransactionService {
       data: { user_id: userId, ...transactionDto },
     });
 
-    await this.balanceService.updateTotal(userId, transactionDto.total);
+    await this.balanceService.updateTotal(
+      userId,
+      transactionDto.total,
+      'increment',
+    );
 
     return newTransaction;
   }

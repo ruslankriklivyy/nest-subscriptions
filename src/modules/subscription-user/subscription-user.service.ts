@@ -45,6 +45,12 @@ export class SubscriptionUserService {
       throw new HttpException('Not enough money', HttpStatus.BAD_REQUEST);
     }
 
+    await this.balanceService.updateTotal(
+      subscriptionUserDto.user_id,
+      subscription.price,
+      'decrement',
+    );
+
     const currentDate = new Date();
     const oneMonthLater = new Date(
       currentDate.getFullYear(),
@@ -57,7 +63,12 @@ export class SubscriptionUserService {
       data: { is_active: false, end_date: oneMonthLater },
     });
 
-    return this.prisma.subscriptionUser.create({ data: subscriptionUserDto });
+    return this.prisma.subscriptionUser.create({
+      data: {
+        ...subscriptionUserDto,
+        available_posts_count: subscription.available_posts_count,
+      },
+    });
   }
 
   async update(
@@ -89,6 +100,37 @@ export class SubscriptionUserService {
           subscription_id: subscriptionId,
         },
       },
+    });
+  }
+
+  async getAvailablePostsCount(userId: number) {
+    const subscriptionUser = await this.prisma.subscriptionUser.findFirst({
+      where: { user_id: userId, is_active: true },
+    });
+    const activeSubscriptionUser = subscriptionUser.subscription_id;
+    const subscription = await this.subscriptionService.getOne(
+      activeSubscriptionUser,
+    );
+
+    return {
+      count: subscription.available_posts_count,
+      subscriptionId: activeSubscriptionUser,
+    };
+  }
+
+  updateAvailablePostsCount(
+    userId: number,
+    subscriptionId: number,
+    count: number,
+  ) {
+    return this.prisma.subscriptionUser.update({
+      where: {
+        user_id_subscription_id: {
+          user_id: userId,
+          subscription_id: subscriptionId,
+        },
+      },
+      data: { available_posts_count: count },
     });
   }
 
