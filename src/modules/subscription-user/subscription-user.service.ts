@@ -5,6 +5,7 @@ import { UpdateSubscriptionUserDto } from './dto/update-subscription-user.dto';
 import { Cron } from '@nestjs/schedule';
 import { SubscriptionService } from '../subscription/subscription.service';
 import { BalanceService } from '../balance/balance.service';
+import { oneMonthLater } from '../../helpers/get-one-month-later.helper';
 
 @Injectable()
 export class SubscriptionUserService {
@@ -40,6 +41,22 @@ export class SubscriptionUserService {
     const userBalance = await this.balanceService.getOne(
       subscriptionUserDto.user_id,
     );
+    const subscriptionsUser = await this.prisma.subscriptionUser.findUnique({
+      where: {
+        user_id_subscription_id: {
+          user_id: subscriptionUserDto.user_id,
+          subscription_id: subscriptionUserDto.subscription_id,
+        },
+        end_date: { lte: oneMonthLater },
+      },
+    });
+
+    if (subscriptionsUser) {
+      throw new HttpException(
+        'That subscription is already use',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     if (subscription.price > userBalance.total) {
       throw new HttpException('Not enough money', HttpStatus.BAD_REQUEST);
@@ -51,21 +68,10 @@ export class SubscriptionUserService {
       'decrement',
     );
 
-    const currentDate = new Date();
-    const oneMonthLater = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      currentDate.getDate(),
-    );
-
-    await this.prisma.subscriptionUser.updateMany({
-      where: { user_id: subscriptionUserDto.user_id, is_active: true },
-      data: { is_active: false, end_date: oneMonthLater },
-    });
-
     return this.prisma.subscriptionUser.create({
       data: {
         ...subscriptionUserDto,
+        end_date: oneMonthLater,
         available_posts_count: subscription.available_posts_count,
       },
     });
@@ -76,10 +82,12 @@ export class SubscriptionUserService {
     subscriptionId: number,
     subscriptionUserDto: UpdateSubscriptionUserDto,
   ) {
-    await this.prisma.subscriptionUser.updateMany({
-      where: { user_id: userId, is_active: true },
-      data: { is_active: false },
-    });
+    if (subscriptionUserDto.is_active) {
+      await this.prisma.subscriptionUser.updateMany({
+        where: { user_id: userId, is_active: true },
+        data: { is_active: false },
+      });
+    }
 
     return this.prisma.subscriptionUser.update({
       where: {

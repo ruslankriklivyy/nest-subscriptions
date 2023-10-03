@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { excludeFields } from '../../helpers/exclude-fields.helper';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  getOne(id: number) {
-    return this.prisma.user.findUnique({
+  async getOne(id: number) {
+    const user = await this.prisma.user.findUnique({
       where: { id },
       include: { role: true, balance: true },
     });
+    return excludeFields(user, ['password']);
   }
 
   create(userDto: CreateUserDto) {
