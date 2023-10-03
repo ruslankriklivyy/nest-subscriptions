@@ -11,7 +11,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { ROLES_KEY } from './roles-auth.decorator';
 
-const ADMIN_ROLE = 'admin';
+export const ADMIN_ROLE = 'admin';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

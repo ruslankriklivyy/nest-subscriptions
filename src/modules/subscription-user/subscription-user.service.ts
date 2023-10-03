@@ -38,6 +38,14 @@ export class SubscriptionUserService {
     const subscription = await this.subscriptionService.getOne(
       subscriptionUserDto.subscription_id,
     );
+
+    if (!subscription.is_published) {
+      throw new HttpException(
+        'Subscription is not published',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const userBalance = await this.balanceService.getOne(
       subscriptionUserDto.user_id,
     );
@@ -115,6 +123,14 @@ export class SubscriptionUserService {
     const subscriptionUser = await this.prisma.subscriptionUser.findFirst({
       where: { user_id: userId, is_active: true },
     });
+
+    if (!subscriptionUser) {
+      throw new HttpException(
+        "You don't have active subscription",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const activeSubscriptionUser = subscriptionUser.subscription_id;
 
     return {

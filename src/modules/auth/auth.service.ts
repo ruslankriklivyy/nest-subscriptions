@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserEntity } from '../user/user.entity';
 import { LoginDto } from './dto/login.dto';
+import { excludeFields } from '../../helpers/exclude-fields.helper';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,7 @@ export class AuthService {
     const token = await this.generateToken(user);
 
     return {
-      user,
+      user: excludeFields(user, ['password']),
       token,
     };
   }
@@ -46,7 +47,7 @@ export class AuthService {
     const token = await this.generateToken(newUser);
 
     return {
-      user: newUser,
+      user: excludeFields(newUser, ['password']),
       token,
     };
   }

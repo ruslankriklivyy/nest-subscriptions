@@ -13,15 +13,19 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { CreateAndUpdateSubscriptionDto } from './dto/create-subscription.dto';
 import { Roles } from '../auth/roles-auth.decorator';
+import { User } from '../../decorators/user.decorator';
+import { UserEntity } from '../user/user.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Subscription')
 @Controller('subscriptions')
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  getAll() {
-    return this.subscriptionService.getAll();
+  getAll(@User() user: UserEntity) {
+    return this.subscriptionService.getAll(user);
   }
 
   @Get('/:id')

@@ -14,7 +14,10 @@ import { CreateSubscriptionUserDto } from './dto/create-subscription-user.dto';
 import { UpdateSubscriptionUserDto } from './dto/update-subscription-user.dto';
 import { User } from '../../decorators/user.decorator';
 import { SubscriptionUserPolicy } from './subscription-user.policy';
+import { UserEntity } from '../user/user.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User subscriptions')
 @Controller('user-subscriptions')
 export class SubscriptionUserController {
   constructor(
@@ -27,43 +30,43 @@ export class SubscriptionUserController {
     return this.subscriptionUserService.getAll();
   }
 
-  @Get('/:id')
+  @Get('/:subscriptionId')
   @UseGuards(JwtAuthGuard)
-  getOne(@Param() { id }, @User() userId: number) {
-    return this.subscriptionUserService.getOne(userId, Number(id));
+  getOne(@Param() { subscriptionId }, @User() user: UserEntity) {
+    return this.subscriptionUserService.getOne(user.id, Number(subscriptionId));
   }
 
-  @Post('/:id')
+  @Post('/:subscriptionId')
   @UseGuards(JwtAuthGuard)
   create(
-    @Param() { id },
+    @Param() { subscriptionId },
     @Body() subscriptionUserDto: CreateSubscriptionUserDto,
-    @User() userId: number,
+    @User() user: UserEntity,
   ) {
     return this.subscriptionUserService.create({
-      user_id: userId,
-      subscription_id: Number(id),
+      user_id: user.id,
+      subscription_id: Number(subscriptionId),
       ...subscriptionUserDto,
     });
   }
 
-  @Put('/:id')
+  @Put('/:subscriptionId')
   @UseGuards(JwtAuthGuard, SubscriptionUserPolicy)
   update(
-    @Param() { id },
+    @Param() { subscriptionId },
     @Body() subscriptionUserDto: UpdateSubscriptionUserDto,
-    @User() userId: number,
+    @User() user: UserEntity,
   ) {
     return this.subscriptionUserService.update(
-      userId,
-      Number(id),
+      user.id,
+      Number(subscriptionId),
       subscriptionUserDto,
     );
   }
 
-  @Delete('/:id')
+  @Delete('/:subscriptionId')
   @UseGuards(JwtAuthGuard, SubscriptionUserPolicy)
-  delete(@Param() { id }, @User() userId: number) {
-    return this.subscriptionUserService.delete(userId, Number(id));
+  delete(@Param() { subscriptionId }, @User() user: UserEntity) {
+    return this.subscriptionUserService.delete(user.id, Number(subscriptionId));
   }
 }
